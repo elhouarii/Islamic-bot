@@ -1,13 +1,13 @@
 {
-  "name": "whatsapp_adhkar",
+  "name": "islamic-bot",
   "version": "1.2.3",
   "description": "بوت أذكار للواتساب [ صور , فيديو أذكار , ملصقات , قرآن ]",
   "type": "module",
   "main": "index.js",
   "author": {
-    "name": "Ryan Almalki",
-    "email": "rn0xx711@gmail.com",
-    "url": "https://github.com/rn0x"
+    "name": "Elhouari",
+    "email": "eeljooy@gmail.com",
+    "url": "https://elhouari.tk"
   },
   "scripts": {
     "start": "node index.js",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rn0x/whatsapp_adhkar.git"
+    "url": "git+https://github.com/elhouarii/Islamic-bot.git"
   },
   "keywords": [
     "bot",
@@ -36,7 +36,7 @@
     "adhkar"
   ],
   "bugs": {
-    "url": "https://github.com/rn0x/whatsapp_adhkar/issues"
+    "url": "https://github.com/elhouarii/Islamic-bot/issues"
   },
-  "homepage": "https://github.com/rn0x/whatsapp_adhkar#readme"
+  "homepage": "https://github.com/elhouarii/Islamic-bot#readme"
 }
