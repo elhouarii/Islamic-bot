@@ -19,7 +19,7 @@ global.prems = JSON.parse(fs.readFileSync('./src/premium.json')) // Premium user
 
 global.devx = 'false'
 
-global.owner = ["918113921898"]
+global.owner = ["212646240638"]
 global.APIs = { // API Prefix
 //======= name: 'https://website' ========//
   nrtm: 'https://nurutomo.herokuapp.com',
@@ -43,7 +43,7 @@ global.APIKeys = { // APIKey Here
 
  
 global.ucpn = ''
-global.linkgc = 'https://chat.whatsapp.com/HZ4c5yrsd0g8OfELZGySFZ'
+global.linkgc = 'https://chat.whatsapp.com/HZ4c0yrsd0g8OfELZGySFZ'
 global.linkig = 'https://www.instagram.com/neer_j_  '
 global.linkyt = 'https://www.youtube.com/channel/UCLegt7MKqNBxJjIkE_QNPdA'
 global.linkfb = 'https://fb.watch/aYv0jAffAO'
@@ -79,7 +79,7 @@ global.dtu = 'BOT HELP GROUP'
 
 
 
-global.version = '2.0.1(ʙᴇᴛᴀ)'
+global.version = '2.0.1'
 
 global.multiplier = 69 // The higher, The harder levelup
 global.nolink = 'No URL Found'
