@@ -1,120 +1,55 @@
-import wa from '@open-wa/wa-automate';
-import moment from 'moment-timezone';
-import broadcast from './lib/broadcast.js';
-import figlet from 'figlet';
-import { menu_number } from './lib/menu_number.js';
-import getMenu from './lib/getMenu.js';
-import Folder from './lib/Folder.js';
-import Hi from './menu/Hi.js';
-import Error from './menu/error.js';
-Folder();
+console.log('Starting...')
+let cluster = require('cluster')
+let path = require('path')
+let fs = require('fs')
+const Readline = require('readline')
+const yargs = require('yargs/yargs')
+const rl = Readline.createInterface(process.stdin, process.stdout)
 
-async function Bot_Adhkar() {
+var isRunning = false
+/**
+ * Start a js file
+ * @param {String} file `path/to/file`
+ */
+function start(file) {
+  if (isRunning) return
+  isRunning = true
+  let args = [path.join(__dirname, file), ...process.argv.slice(2)]
 
-    try {
-
-        console.log(figlet.textSync('Bot Adhkar'));
-        console.log("                  Start " + moment.tz("Asia/Riyadh").format('LT'));
-        console.log("               Telegram @BinAttia \n");
-
-        const options = {
-            multiDevice: true,
-            authTimeout: 0,
-            blockCrashLogs: true,
-            useChrome: true,
-            autoRefresh: true,
-            cacheEnabled: true,
-            qrRefreshS: 0,
-            throwErrorOnTosBlock: false,
-            deleteSessionDataOnLogout: false,
-            skipUpdateCheck: false,
-            bypassCSP: true,
-            headless: true,
-            logConsole: false,
-            executablePath: process.platform === "win32" ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" : "/usr/bin/google-chrome-stable",
-            qrTimeout: 0,
-            sessionId: 'Bot_Adhkar'
-        };
-
-        let client = await wa.create(options);
-
-        await client.onAnyMessage(async (msg) => {
-
-            let from = msg.from;
-            let id = msg.id
-            let body = msg.body;
-            let messages = msg;
-            let Menufrom = await getMenu(from);
-            let pushname = msg.sender && msg.sender.pushname ? msg.sender.pushname : msg.sender && msg.sender.verifiedName ? msg.sender.verifiedName : msg.sender && msg.sender.formattedName ? msg.sender.formattedName : ' ';
-            let isGroupMsg = msg.isGroupMsg;
-            let number_arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
-
-            await menu_number[Menufrom !== undefined ? Menufrom : 0].menu_name.exec({
-
-                body: body,
-                messages: messages,
-                id: id,
-                from: from,
-                isGroup: isGroupMsg,
-                pushname: pushname,
-                client: client,
-
-            });
-
-            Hi(client, body, from, pushname, id);
-
-            if (isGroupMsg === false && number_arabic.some(fx => body.includes(fx))) {
-                
-
-                let msg = 'من فضلك استعمل الأرقم الإنجليزية ⚠️'
-
-                await client.reply(from, msg, id).catch((erro) => console.log(erro));
-
-            }
-
-            await client.sendSeen(from)
-        });
-
-
-        broadcast(client);
-
-        setInterval(async () => {
-
-            for (let lop of await client.getAllUnreadMessages()) {
-
-                let from = lop.from;
-                let id = lop.id
-                let body = lop.body;
-                let messages = lop;
-                let Menufrom = await getMenu(from);
-                let pushname = ' ';
-                let isGroupMsg = lop.isGroupMsg;
-
-                await menu_number[Menufrom !== undefined ? Menufrom : 0].menu_name.exec({
-
-                    body: body,
-                    messages: messages,
-                    id: id,
-                    from: from,
-                    isGroup: isGroupMsg,
-                    pushname: pushname,
-                    client: client,
-
-                });
-
-                await client.sendSeen(from);
-                await new Promise(r => setTimeout(r, 5000));
-
-            }
-
-        }, 260000);
-
-    } catch (error) {
-
-        Error(error);
-
+  cluster.setupMaster({
+    exec: path.join(__dirname, file),
+    args: args.slice(1),
+  })
+  let p = cluster.fork()
+  p.on('message', data => {
+    console.log('[RECEIVED]', data)
+    switch (data) {
+      case 'reset':
+        p.kill()
+        isRunning = false
+        start.apply(this, arguments)
+        break
+      case 'uptime':
+        p.send(process.uptime())
+        break
     }
-
+  })
+  p.on('exit', code => {
+    isRunning = false
+    console.error('Exited with code:', code)
+    if (code === 0) return
+    fs.watchFile(args[0], () => {
+      fs.unwatchFile(args[0])
+      start(file)
+    })
+  })
+  let opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
+  if (!opts['test'])
+    if (!rl.listenerCount()) rl.on('line', line => {
+      p.emit('message', line.trim())
+    })
+  // console.log(p)
 }
 
-Bot_Adhkar();
+
+start('Millie.js')
